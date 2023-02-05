@@ -1,14 +1,18 @@
-body {
+body,
+html {
   -ms-overflow-style: 5px;
   scrollbar-width: 5px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 ::-webkit-scrollbar {
   width: 6px;
+  background-color: #111b21;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: rgb(174 186 193 / 20%);
+  background-color: #374045;
 }
 
 .chat_body::-webkit-scrollbar-thumb {
@@ -40,9 +44,9 @@ body {
 .chat_card::after {
   content: "";
   position: absolute;
-  top: 15%;
-  right: 97%;
-  margin-top: -5px;
+  top: 0;
+  left: 0;
+  margin-left: -12px;
   border-width: 12px;
   border-style: solid;
   border-color: #202c33 transparent transparent transparent;
@@ -59,10 +63,63 @@ body {
 .chat_card_wrapper.chat_receiver .chat_card::after {
   content: "";
   position: absolute;
-  top: 15%;
-  left: 97%;
-  margin-top: -5px;
+  left: 100%;
   border-width: 12px;
   border-style: solid;
   border-color: #005c4b transparent transparent transparent;
+}
+
+.profile_pic_overlay {
+  visibility: hidden;
+  z-index: -1;
+  opacity: 0;
+}
+
+.profile_pic_wrapper:hover .profile_pic_overlay {
+  visibility: visible;
+  z-index: 10;
+  opacity: 1;
+}
+
+.profile_pic_wrapper {
+  transform: scale(0);
+}
+
+.sidebarLeftProfile.active .profile_pic_wrapper {
+  transform: scale(1);
+}
+
+.sidebar_left_info {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+
+.sidebarLeftProfile.active .sidebar_left_info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sidebar_left_community_info {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.sidebarLeftProfile.active .sidebar_left_community_info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sidebarleft_header_text {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.sidebarLeftProfile.active .sidebarleft_header_text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sidebar_menu {
+  box-shadow: 0 2px 5px 0 rgba(11, 20, 26, 0.26),
+    0 2px 10px 0 rgba(11, 20, 26, 0.16);
 }
