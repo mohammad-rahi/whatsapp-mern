@@ -16,13 +16,16 @@ const Chat = ({ activeChatUser }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("/messages/sync")
-      .then((response) => {
-        setMessages(response.data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    if (activeChatUser) {
+      axios
+        .get(`/messages/sync?receiverUid=${activeChatUser.uid}`)
+        .then((response) => {
+          setMessages(response.data);
+          console.log(response.data);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [activeChatUser]);
 
   useEffect(() => {
     const pusher = new Pusher("3981867da7b75ce73d65", {
@@ -43,10 +46,6 @@ const Chat = ({ activeChatUser }) => {
     };
   }, [messages]);
 
-  useEffect(() => {
-    // console.log(activeChatUser);
-  }, [activeChatUser]);
-
   const handleMessage = (e) => {
     e.preventDefault();
 
@@ -54,9 +53,9 @@ const Chat = ({ activeChatUser }) => {
       axios
         .post("messages/new", {
           massage: text,
-          name: "Mohammad Rahi",
+          senderUid: user.uid,
+          receiverUid: activeChatUser.uid,
           timestamp: new Date(),
-          received: "Akhi",
         })
         .then((response) => {
           setText("");
@@ -108,13 +107,16 @@ const Chat = ({ activeChatUser }) => {
 
       <div className="chat_body_wrapper flex-[.9] overflow-hidden relative">
         <div className="h-[78.9vh] overflow-y-auto overflow-x-hidden py-3 px-16 chat_body">
-          {messages.map((message, index) => (
-            <ChatCard
-              key={index}
-              text={message.massage}
-              className={message.received === "Rahi" ? "chat_receiver" : null}
-            />
-          ))}
+          {messages.length > 0 &&
+            messages.map((message, index) => (
+              <ChatCard
+                key={index}
+                text={message.massage}
+                className={
+                  message.senderUid === user.uid ? "chat_receiver" : null
+                }
+              />
+            ))}
         </div>
       </div>
 

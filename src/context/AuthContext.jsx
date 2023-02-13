@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 
+import Loading from "../components/Loading";
 import PropTypes from "prop-types";
 import { auth } from "../config/firebase";
 import axios from "../axios";
@@ -51,6 +52,7 @@ export const AuthProvider = ({ children }) => {
                 email: user.email,
                 uid: user.uid,
                 photoURL: user.photoURL,
+                bio: "Hey there! I am using WhatsApp.",
               })
               .then((res) => console.log(res))
               .catch((err) => console.error(err));
@@ -109,7 +111,7 @@ export const AuthProvider = ({ children }) => {
         authLoading,
       }}
     >
-      {children}
+      {authLoading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };

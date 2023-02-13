@@ -6,7 +6,9 @@ import { FiMoreVertical } from "react-icons/fi";
 import { HiLockClosed } from "react-icons/hi";
 import { MdDonutLarge } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
+import MoreMenu from "../MoreMenu";
 import PropTypes from "prop-types";
+import { SIDEBAR_MENU } from "../../lib/sidebarMore";
 import SidebarCard from "./SidebarCard";
 import SidebarLeftCommunity from "./SidebarLeftCommunity";
 import SidebarLeftProfile from "./SidebarLeftProfile";
@@ -15,6 +17,8 @@ import { useAuth } from "../../context/AuthContext";
 const Sidebar = ({
   showSidebarMenu,
   setShowSidebarMenu,
+  showProfileClickMenu,
+  setShowProfileClickMenu,
   setActiveChatUser,
   activeChatUser,
 }) => {
@@ -29,6 +33,8 @@ const Sidebar = ({
       <SidebarLeftProfile
         showSidebarLeftProfle={showSidebarLeftProfle}
         setShowSidebarLeftProfle={setShowSidebarLeftProfle}
+        setShowProfileClickMenu={setShowProfileClickMenu}
+        showProfileClickMenu={showProfileClickMenu}
       />
       <SidebarLeftCommunity
         showSidebarLeftCommunity={showSidebarLeftCommunity}
@@ -42,7 +48,7 @@ const Sidebar = ({
           >
             <img
               src={user && user.photoURL}
-              alt={user.displayName}
+              alt={user && user.displayName}
               className="w-full h-auto"
             />
           </figure>
@@ -70,37 +76,11 @@ const Sidebar = ({
                 <FiMoreVertical className="w-6 h-6 text-gray1" />
               </div>
 
-              <div
-                className={`bg-dark3 text-gray-300 text-[15px]  absolute z-10 w-[195px] sidebar_menu  rounded-[3px] py-[10px] top-[110%] right-1 transition-all duration-300 origin-top-right  ${
-                  showSidebarMenu
-                    ? "scale-100 opacity-100"
-                    : "scale-0 opacity-0"
-                }`}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <ul>
-                  <li className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer">
-                    New group
-                  </li>
-                  <li className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer">
-                    New community
-                  </li>
-                  <li className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer">
-                    Starred messages
-                  </li>
-                  <li className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer">
-                    Settings
-                  </li>
-                  <li
-                    className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer"
-                    onClick={signout}
-                  >
-                    Log out
-                  </li>
-                </ul>
-              </div>
+              <MoreMenu
+                showMenu={showSidebarMenu}
+                menus={SIDEBAR_MENU}
+                onLogout={signout}
+              />
             </div>
           </div>
         </div>

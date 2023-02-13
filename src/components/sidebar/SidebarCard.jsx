@@ -22,7 +22,7 @@ const SidebarCard = ({
       <figure className="w-[52px] h-[52px] flex items-center justify-center">
         <img
           src={userData.photoURL}
-          alt="Mohammad Rahi"
+          alt={user.displayName}
           className="max-w-full h-auto rounded-full"
         />
       </figure>

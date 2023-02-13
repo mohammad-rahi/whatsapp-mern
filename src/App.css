@@ -75,7 +75,8 @@ html {
   opacity: 0;
 }
 
-.profile_pic_wrapper:hover .profile_pic_overlay {
+.profile_pic_wrapper:hover .profile_pic_overlay,
+.profile_pic_overlay.active {
   visibility: visible;
   z-index: 10;
   opacity: 1;

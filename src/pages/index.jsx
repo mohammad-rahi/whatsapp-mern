@@ -6,17 +6,23 @@ import { useAuth } from "../context/AuthContext";
 
 const Index = () => {
   const [showSidebarMenu, setShowSidebarMenu] = useState(false);
+  const [showProfileClickMenu, setShowProfileClickMenu] = useState(false);
   const [activeChatUser, setActiveChatUser] = useState(null);
 
   return (
     <div
       className="bg-dark1"
-      onClick={() => showSidebarMenu && setShowSidebarMenu(false)}
+      onClick={() => {
+        showSidebarMenu && setShowSidebarMenu(false);
+        showProfileClickMenu && setShowProfileClickMenu(false);
+      }}
     >
       <div className="flex max-w-[1600px] mx-auto overflow-hidden h-screen p-[20px]">
         <Sidebar
           showSidebarMenu={showSidebarMenu}
           setShowSidebarMenu={setShowSidebarMenu}
+          showProfileClickMenu={showProfileClickMenu}
+          setShowProfileClickMenu={setShowProfileClickMenu}
           setActiveChatUser={setActiveChatUser}
           activeChatUser={activeChatUser}
         />

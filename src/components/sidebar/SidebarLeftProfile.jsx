@@ -5,12 +5,16 @@ import { FaCamera } from "react-icons/fa";
 import { HiArrowLeft } from "react-icons/hi";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { MdModeEdit } from "react-icons/md";
+import MoreMenu from "../MoreMenu";
 import PropTypes from "prop-types";
+import { SIDEBAR_MENU } from "../../lib/sidebarMore";
 import { useAuth } from "../../context/AuthContext";
 
 const SidebarLeftProfile = ({
   showSidebarLeftProfle,
   setShowSidebarLeftProfle,
+  setShowProfileClickMenu,
+  showProfileClickMenu,
 }) => {
   const { user } = useAuth();
 
@@ -28,6 +32,28 @@ const SidebarLeftProfile = ({
       document.getElementById("edit_name").focus();
     }
   }, [editName]);
+
+  useEffect(() => {
+    // document.addEventListener("click", (e) => {
+    //   let profieMore = document.querySelector("#profile_pic_more");
+    //   let isClosest = e.target.closest("#profile_pic_more");
+    //   console.log(isClosest);
+    //   if (!isClosest && profieMore.classList.contains("show")) {
+    //     profieMore.classList.remove("show");
+    //   }
+    // });
+  }, []);
+
+  const handleProfileClick = (e) => {
+    let profieMore = document.querySelector("#profile_pic_more");
+
+    var rect = e.target.getBoundingClientRect();
+    var x = e.clientX - rect.left; //x position within the element.
+    var y = e.clientY - rect.top; //y position within the element.
+
+    profieMore.setAttribute("style", `left: ${x}px; top: ${y}px`);
+    setShowProfileClickMenu(true);
+  };
 
   return (
     <div
@@ -56,20 +82,53 @@ const SidebarLeftProfile = ({
       </header>
 
       <div className="flex items-center justify-center p-7">
-        <div className="relative rounded-full overflow-hidden cursor-pointer profile_pic_wrapper transition-all duration-700 delay-300">
-          <div className="absolute top-0 left-0 right-0 bottom-0 bg-[rgb(32_44_51_/_80%)] flex flex-col items-center justify-center gap-4 profile_pic_overlay transition duration-75">
-            <FaCamera className="w-6 h-6 text-gray1" />
-            <span className="uppercase text-sm text-gray1 text-center leading-none font-medium">
-              chage <br /> profile photo
-            </span>
+        <div className="relative">
+          {/* <MoreMenu showMenu={showProfileClickMenu} menus={SIDEBAR_MENU} /> */}
+          <div
+            id="profile_pic_more"
+            className={`bg-dark3 text-gray-300 text-[15px] absolute z-10 w-[195px] sidebar_menu rounded-[3px] py-[10px] transition-all duration-300 origin-top-left  ${
+              showProfileClickMenu
+                ? "scale-100 opacity-100"
+                : "scale-0 opacity-0"
+            }`}
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <ul>
+              {SIDEBAR_MENU.map((menu, i) => (
+                <li
+                  key={i}
+                  className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer"
+                >
+                  {menu}
+                </li>
+              ))}
+            </ul>
           </div>
-          <figure className="w-[200px] h-[200px] rounded-full overflow-hidden cursor-pointer">
-            <img
-              src={user.photoURL}
-              alt={user.displayName}
-              className="w-full h-auto"
-            />
-          </figure>
+
+          <div
+            className="relative cursor-pointer profile_pic_wrapper transition-all duration-700 delay-300"
+            onClick={handleProfileClick}
+          >
+            <div
+              className={`absolute top-0 left-0 right-0 bottom-0 bg-[rgb(32_44_51_/_80%)] flex flex-col items-center justify-center gap-4 profile_pic_overlay transition duration-75 rounded-full ${
+                showProfileClickMenu && "active"
+              }`}
+            >
+              <FaCamera className="w-6 h-6 text-gray1" />
+              <span className="uppercase text-sm text-gray1 text-center leading-none font-medium">
+                chage <br /> profile photo
+              </span>
+            </div>
+            <figure className="w-[200px] h-[200px] rounded-full overflow-hidden cursor-pointer">
+              <img
+                src={user.photoURL}
+                alt={user.displayName}
+                className="w-full h-auto"
+              />
+            </figure>
+          </div>
         </div>
       </div>
 
