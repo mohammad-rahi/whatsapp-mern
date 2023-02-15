@@ -1,3 +1,5 @@
+import "cropperjs/dist/cropper.css";
+
 import React, { useEffect, useState } from "react";
 
 import { BsEmojiLaughing } from "react-icons/bs";
@@ -6,8 +8,10 @@ import { HiArrowLeft } from "react-icons/hi";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { MdModeEdit } from "react-icons/md";
 import MoreMenu from "../MoreMenu";
+import { PROFILE_PIC_MORE } from "../../lib/profilePicMore";
+import ProfileAdjast from "./ProfileAdjast";
 import PropTypes from "prop-types";
-import { SIDEBAR_MENU } from "../../lib/sidebarMore";
+import axios from "../../axios";
 import { useAuth } from "../../context/AuthContext";
 
 const SidebarLeftProfile = ({
@@ -16,22 +20,63 @@ const SidebarLeftProfile = ({
   setShowProfileClickMenu,
   showProfileClickMenu,
 }) => {
-  const { user } = useAuth();
+  const { mongoUser } = useAuth();
 
   const [editName, setEditName] = useState(false);
+  const [name, setName] = useState("");
+  const [tempName, setTempName] = useState("");
   const [editBio, setEditBio] = useState(false);
+  const [bio, setBio] = useState("");
+  const [tempBio, setTempBio] = useState("");
+  const [uploadProfile, setUploadProfile] = useState("");
+
+  const [image, setImage] = useState();
+  const [cropData, setCropData] = useState("");
+
+  useEffect(() => {
+    if (cropData) {
+      axios
+        .put(`/users/${mongoUser._id}`, {
+          photoURL: cropData,
+        })
+        .then(() => {
+          alert("Profile updated successfully. Please reload!");
+        });
+    }
+  }, [cropData, mongoUser]);
+
+  useEffect(() => {
+    if (mongoUser._id) {
+      setTempName(mongoUser.displayName);
+      setTempBio(mongoUser.bio);
+    }
+  }, [mongoUser]);
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        setEditName(false);
+        if (document.activeElement === document.getElementById("edit_name")) {
+          setEditName(false);
+        }
+
+        if (document.activeElement === document.getElementById("edit_bio")) {
+          setEditBio(false);
+        }
+
+        return;
       }
     });
+  }, []);
 
+  useEffect(() => {
     if (editName) {
       document.getElementById("edit_name").focus();
     }
-  }, [editName]);
+
+    if (editBio) {
+      document.getElementById("edit_bio").focus();
+    }
+  }, [editBio, editName]);
 
   useEffect(() => {
     // document.addEventListener("click", (e) => {
@@ -53,6 +98,60 @@ const SidebarLeftProfile = ({
 
     profieMore.setAttribute("style", `left: ${x}px; top: ${y}px`);
     setShowProfileClickMenu(true);
+  };
+
+  const handleEditName = () => {
+    if (name.trim()) {
+      axios.get(`/users/sync/${mongoUser.uid}`).then((res) => {
+        if (res.data._id) {
+          axios
+            .put(`/users/${res.data._id}`, {
+              displayName: name,
+            })
+            .then(() => {
+              setEditName(false);
+            })
+            .catch((err) => {
+              console.error(err);
+              setEditName(false);
+            });
+        }
+      });
+    }
+    setEditName(false);
+  };
+
+  const handleEditBio = () => {
+    if (bio.trim()) {
+      axios.get(`/users/sync/${mongoUser.uid}`).then((res) => {
+        if (res.data._id) {
+          axios
+            .put(`/users/${res.data._id}`, {
+              bio,
+            })
+            .then(() => {
+              setEditBio(false);
+            })
+            .catch((err) => {
+              console.error(err);
+              setEditBio(false);
+            });
+        }
+      });
+    }
+
+    setEditBio(false);
+  };
+
+  const handleProfilePicChange = (ev) => {
+    setUploadProfile(ev.target.value);
+
+    try {
+      let url = URL.createObjectURL(ev.target.files[0]);
+      setImage(url);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -81,6 +180,13 @@ const SidebarLeftProfile = ({
         </div>
       </header>
 
+      <ProfileAdjast
+        image={image}
+        uploadProfile={uploadProfile}
+        setUploadProfile={setUploadProfile}
+        setCropData={setCropData}
+      />
+
       <div className="flex items-center justify-center p-7">
         <div className="relative">
           {/* <MoreMenu showMenu={showProfileClickMenu} menus={SIDEBAR_MENU} /> */}
@@ -96,13 +202,31 @@ const SidebarLeftProfile = ({
             }}
           >
             <ul>
-              {SIDEBAR_MENU.map((menu, i) => (
-                <li
-                  key={i}
-                  className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer"
-                >
-                  {menu}
-                </li>
+              {PROFILE_PIC_MORE.map((menu, i) => (
+                <>
+                  {menu === "Upload Photo" ? (
+                    <li key={i}>
+                      <label className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer inline-block w-full">
+                        {menu}
+
+                        <input
+                          type="file"
+                          onChange={handleProfilePicChange}
+                          className="hidden"
+                          value={uploadProfile}
+                          accept=".png, .jpg, .jpeg"
+                        />
+                      </label>
+                    </li>
+                  ) : (
+                    <li
+                      key={i}
+                      className="py-[9px] px-6 hover:bg-dark1 transition-all duration-100 cursor-pointer"
+                    >
+                      {menu}
+                    </li>
+                  )}
+                </>
               ))}
             </ul>
           </div>
@@ -123,8 +247,9 @@ const SidebarLeftProfile = ({
             </div>
             <figure className="w-[200px] h-[200px] rounded-full overflow-hidden cursor-pointer">
               <img
-                src={user.photoURL}
-                alt={user.displayName}
+                id="profile_pic"
+                src={mongoUser.photoURL}
+                alt={mongoUser.displayName}
                 className="w-full h-auto"
               />
             </figure>
@@ -137,7 +262,7 @@ const SidebarLeftProfile = ({
           <div className="text-sm text-green4">Your name</div>
           <div className="my-4 flex items-center justify-between">
             <div
-              className={`flex items-center gap-2 w-full ${
+              className={`flex gap-2 w-full ${
                 editName && "border-b-2"
               } border-gray4 transition-all duration-100`}
             >
@@ -145,6 +270,7 @@ const SidebarLeftProfile = ({
                 id="edit_name"
                 className="text-lg text-gray-300 w-full outline-none border-none"
                 contentEditable={editName}
+                onInput={(e) => setName(e.target.innerText)}
                 onFocus={(e) => {
                   e.currentTarget.parentElement.classList.add("border-green4");
                   e.currentTarget.parentElement.classList.remove(
@@ -158,10 +284,10 @@ const SidebarLeftProfile = ({
                   );
                 }}
               >
-                {user.displayName}
+                {tempName}
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 h-fit">
                 {editName && (
                   <div
                     className={`w-6 h-6 cursor-pointer flex items-center justify-center`}
@@ -178,7 +304,7 @@ const SidebarLeftProfile = ({
                   }
                   onClick={(e) => {
                     if (editName) {
-                      setEditName(false);
+                      handleEditName();
                     } else {
                       setEditName(true);
                     }
@@ -202,17 +328,62 @@ const SidebarLeftProfile = ({
           <div className="text-sm text-green4">About</div>
           <div className="mt-5 flex justify-between">
             <div
-              className="text-gray-300 leading-5 text-[17px]"
-              contentEditable={editBio}
+              className={`flex gap-2 w-full ${
+                editBio && "border-b-2"
+              } border-gray4 transition-all duration-100`}
             >
-              {user.bio}
-            </div>
-            <div
-              className="w-7 h-7 cursor-pointer flex items-center justify-center"
-              title="Click to edit About"
-              onClick={() => setEditBio(true)}
-            >
-              <MdModeEdit className="w-5 h-5 text-gray-400" />
+              <div
+                id="edit_bio"
+                className="text-gray-300 leading-5 text-[17px] w-full outline-none border-none"
+                contentEditable={editBio}
+                onInput={(e) => setBio(e.target.innerText)}
+                onFocus={(e) => {
+                  e.currentTarget.parentElement.classList.add("border-green4");
+                  e.currentTarget.parentElement.classList.remove(
+                    "border-gray4"
+                  );
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.parentElement.classList.add("border-gray4");
+                  e.currentTarget.parentElement.classList.remove(
+                    "border-green4"
+                  );
+                }}
+              >
+                {tempBio}
+              </div>
+              <div className="flex items-center gap-1 h-fit">
+                {editBio && (
+                  <div
+                    className={`w-6 h-6 cursor-pointer flex items-center justify-center`}
+                    title={"Open emojis panel"}
+                  >
+                    <BsEmojiLaughing className="w-5 h-5 text-gray-400" />
+                  </div>
+                )}
+
+                <div
+                  className="w-6 h-6 cursor-pointer flex items-center justify-center"
+                  title={
+                    editBio
+                      ? "Click to save, ESC to cancel"
+                      : "Click to edit About"
+                  }
+                  onClick={() => {
+                    if (editBio) {
+                      handleEditBio();
+                    } else {
+                      setEditBio(true);
+                    }
+                  }}
+                >
+                  {editBio ? (
+                    <IoCheckmarkOutline className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <MdModeEdit className="w-5 h-5 text-gray-400" />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

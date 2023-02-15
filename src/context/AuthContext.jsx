@@ -17,6 +17,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  const [mongoUser, setMongoUser] = useState({});
   const [users, setUsers] = useState([]);
   const [authLoading, setAuthLoading] = useState(true);
 
@@ -56,6 +57,8 @@ export const AuthProvider = ({ children }) => {
               })
               .then((res) => console.log(res))
               .catch((err) => console.error(err));
+          } else {
+            setMongoUser(res.data);
           }
         })
         .catch((err) => {
@@ -105,6 +108,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        mongoUser,
         users,
         signin,
         signout,

@@ -21,8 +21,10 @@ const Sidebar = ({
   setShowProfileClickMenu,
   setActiveChatUser,
   activeChatUser,
+  showMoreMenu,
+  setShowMoreMenu,
 }) => {
-  const { user, users, signout } = useAuth();
+  const { user, users, signout, mongoUser } = useAuth();
 
   const [showSidebarLeftProfle, setShowSidebarLeftProfle] = useState(false);
   const [showSidebarLeftCommunity, setShowSidebarLeftCommunity] =
@@ -47,14 +49,16 @@ const Sidebar = ({
             onClick={() => setShowSidebarLeftProfle(true)}
           >
             <img
-              src={user && user.photoURL}
-              alt={user && user.displayName}
+              src={mongoUser && mongoUser.photoURL}
+              alt={mongoUser && mongoUser.displayName}
               className="w-full h-auto"
             />
           </figure>
           <div className="flex items-center gap-2">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition duration-400 sidebar_right_icon active:bg-gray1Light"
+              className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition duration-400 sidebar_right_icon active:bg-gray1Light ${
+                showSidebarLeftCommunity && "bg-gray1Light"
+              }`}
               onClick={() => setShowSidebarLeftCommunity(true)}
               title="Communities"
             >
@@ -114,6 +118,8 @@ const Sidebar = ({
                   setActiveChatUser={setActiveChatUser}
                   activeChatUser={activeChatUser}
                   isLastCard={true}
+                  showMoreMenu={showMoreMenu}
+                  setShowMoreMenu={setShowMoreMenu}
                 />
               </React.Fragment>
             ))}

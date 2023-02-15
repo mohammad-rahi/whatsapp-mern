@@ -124,3 +124,22 @@ html {
   box-shadow: 0 2px 5px 0 rgba(11, 20, 26, 0.26),
     0 2px 10px 0 rgba(11, 20, 26, 0.16);
 }
+
+.asjast_image_wrapper {
+  visibility: hidden;
+  z-index: -1;
+}
+
+.adjast_canvas {
+  visibility: hidden;
+  transform: scale(0);
+}
+
+#image_canvas_wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#image_canvas_wrapper {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
