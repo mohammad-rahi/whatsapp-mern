@@ -9,7 +9,13 @@ const ProtectedRoutes = () => {
   const { user, authLoading } = useAuth();
 
   return (
-    <>{authLoading ? <Loading /> : <>{user.uid ? <Home /> : <SignIn />}</>}</>
+    <>
+      {!user && authLoading ? (
+        <Loading />
+      ) : (
+        <>{user.uid ? <Home /> : <SignIn />}</>
+      )}
+    </>
   );
 };
 

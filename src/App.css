@@ -27,7 +27,7 @@ html {
 }
 
 .sidebar_card:hover .sidbar_card_caret_icon {
-  right: -6px;
+  right: 0px;
   opacity: 1;
   visibility: unset;
   z-index: unset;
@@ -52,15 +52,15 @@ html {
   border-color: #202c33 transparent transparent transparent;
 }
 
-.chat_card_wrapper.chat_receiver {
+.chat_card_wrapper.chat_sender {
   justify-content: flex-end;
 }
 
-.chat_card_wrapper.chat_receiver .chat_card {
+.chat_card_wrapper.chat_sender .chat_card {
   background-color: #005c4b;
 }
 
-.chat_card_wrapper.chat_receiver .chat_card::after {
+.chat_card_wrapper.chat_sender .chat_card::after {
   content: "";
   position: absolute;
   left: 100%;
@@ -142,4 +142,27 @@ html {
 #image_canvas_wrapper {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.whatsapp_home {
+  animation: whatsApp_home_animation 150ms
+    cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes whatsApp_home_animation {
+  from {
+    transform: scale(1.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.attachment_wrapper li {
+  transition-timing-function: cubic-bezier(
+    0.175,
+    0.885,
+    0.32,
+    1.275
+  ) !important;
 }

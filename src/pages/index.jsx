@@ -10,6 +10,7 @@ const Index = () => {
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showChatMore, setShowChatMore] = useState(false);
   const [activeChatUser, setActiveChatUser] = useState(null);
+  const [showAttachment, setShowAttachment] = useState(false);
 
   return (
     <div
@@ -19,15 +20,17 @@ const Index = () => {
         showProfileClickMenu && setShowProfileClickMenu(false);
         showMoreMenu && setShowMoreMenu(false);
         showChatMore && setShowChatMore(false);
+        showAttachment && setShowAttachment(false);
       }}
       onClick={() => {
         showSidebarMenu && setShowSidebarMenu(false);
         showProfileClickMenu && setShowProfileClickMenu(false);
         showMoreMenu && setShowMoreMenu(false);
         showChatMore && setShowChatMore(false);
+        showAttachment && setShowAttachment(false);
       }}
     >
-      <div className="flex max-w-[1600px] mx-auto overflow-hidden h-screen p-[20px]">
+      <div className="flex max-w-[1600px] mx-auto overflow-hidden h-screen p-[20px] whatsapp_home">
         <Sidebar
           showSidebarMenu={showSidebarMenu}
           setShowSidebarMenu={setShowSidebarMenu}
@@ -43,6 +46,8 @@ const Index = () => {
             activeChatUser={activeChatUser}
             setShowChatMore={setShowChatMore}
             showChatMore={showChatMore}
+            showAttachment={showAttachment}
+            setShowAttachment={setShowAttachment}
           />
         ) : (
           <BeforeActiveChat />

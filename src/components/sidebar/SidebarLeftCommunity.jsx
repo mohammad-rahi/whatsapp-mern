@@ -20,7 +20,12 @@ const SidebarLeftCommunity = ({
               className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition duration-300 sidebar_right_icon"
               onClick={() => setShowSidebarLeftCommunity(false)}
             >
-              <HiArrowLeft className="w-5 h-5 text-gray-200" />
+              <svg viewBox="0 0 24 24" height="24" width="24">
+                <path
+                  fill="#d9dee0"
+                  d="M12,4l1.4,1.4L7.8,11H20v2H7.8l5.6,5.6L12,20l-8-8L12,4z"
+                ></path>
+              </svg>
             </div>
 
             <span className="text-gray-200 font-medium text-[19px]">

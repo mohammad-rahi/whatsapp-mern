@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import MoreMenu from "../MoreMenu";
 import { RxCaretDown } from "react-icons/rx";
 import { USER_MORE } from "../../lib/UserMore";
 import axios from "../../axios";
@@ -20,7 +19,8 @@ const SidebarCard = ({
   const handleUserCardClick = (e) => {
     e.preventDefault();
 
-    let userMore = document.querySelector("#user_more");
+    let userMore = document.querySelector(`.user_more`);
+
     var x = e.clientX - 10; //x position within the element.
     var y = e.clientY - 10; //y position within the element.
 
@@ -43,8 +43,7 @@ const SidebarCard = ({
   return (
     <>
       <div
-        id="user_more"
-        className={`bg-dark3 text-gray-300 text-[15px] absolute z-10 w-[195px] sidebar_menu rounded-[3px] py-[10px] transition-all duration-300 origin-top-left  ${
+        className={`bg-dark3 text-gray-300 text-[15px] absolute z-10 w-[195px] sidebar_menu rounded-[3px] py-[10px] transition-all duration-300 origin-top-left user_more user_more ${
           showMoreMenu ? "scale-100 opacity-100" : "scale-0 opacity-0"
         }`}
         onContextMenu={(e) => {
@@ -96,13 +95,13 @@ const SidebarCard = ({
               {userData.uid === user.uid ? "Myself" : userData.displayName}
             </p>
             <p className="leading-none" title="You deleted this message">
-              <small>{lastMessage.massage && lastMessage.massage}</small>
+              <small>{lastMessage && lastMessage.massage}</small>
             </p>
           </div>
           <div className="self-start relative">
             <p className="text-gray1">
               <small>
-                {
+                {lastMessage &&
                   [
                     "Sunday",
                     "Monday",
@@ -111,15 +110,19 @@ const SidebarCard = ({
                     "Thursday",
                     "Friday",
                     "Saturday",
-                  ][new Date(lastMessage.timestamp).getDay()]
-                }
+                  ][new Date(lastMessage.timestamp).getDay()]}
               </small>
             </p>
             <div
               className="absolute flex items-center justify-end text-3xl sidbar_card_caret_icon transition-all duration-100"
               onClick={handleUserCardClick}
             >
-              <RxCaretDown className="text-gray1" />
+              <svg viewBox="0 0 19 20" height="20" width="20">
+                <path
+                  fill="#8696a0"
+                  d="M3.8,6.7l5.7,5.7l5.7-5.7l1.6,1.6l-7.3,7.2L2.2,8.3L3.8,6.7z"
+                ></path>
+              </svg>
             </div>
           </div>
         </div>
