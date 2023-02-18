@@ -1,9 +1,9 @@
 const express = require("express");
-const dbMessages = require("./models/dbMessages");
 const mongoose = require("mongoose");
 const Pusher = require("pusher");
 const cors = require("cors");
 const users = require("./models/users");
+const messages = require("./models/messages");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -59,7 +59,7 @@ app.get("/", (req, res) => res.status(200).send("Whatsapp!!"));
 app.listen(port, () => console.log(`Server is running on localhost:${port}`));
 
 app.post("/messages/new", (req, res) => {
-  dbMessages
+  messages
     .create(req.body)
     .then((message) =>
       res.status(201).json({ msg: "New message added successfully" })
@@ -69,14 +69,47 @@ app.post("/messages/new", (req, res) => {
     );
 });
 
+// app.get("/messages/sync", (req, res) => {
+//   messages.find((err, data) => {
+//     if (err) {
+//       res.status(500).send(err);
+//     } else {
+//       res.status(200).send(data);
+//     }
+//   });
+// });
+
 app.get("/messages/sync", (req, res) => {
-  dbMessages.find((err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(data);
+  messages.find(
+    {
+      $or: [
+        { receiverUid: req.query.receiverUid },
+        { senderUid: req.query.senderUid },
+      ],
+    },
+    (err, data) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).send(data);
+      }
     }
-  });
+  );
+});
+
+app.get("/messages/sync/user", (req, res) => {
+  messages.find(
+    {
+      $or: [{ receiverUid: req.query.uid }, { senderUid: req.query.uid }],
+    },
+    (err, data) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).send(data);
+      }
+    }
+  );
 });
 
 app.post("/users/new", (req, res) => {
@@ -110,6 +143,17 @@ app.get("/users/sync/:uid", (req, res) => {
       }
     }
   });
+});
+
+app.put("/users/:id", (req, res) => {
+  users
+    .findByIdAndUpdate(req.params.id, req.body)
+    .then((user) => {
+      res.json({ msg: "User successfully updated!" });
+    })
+    .catch((err) => {
+      res.status(400).json({ error: "Undable to update database" });
+    });
 });
 
 module.exports = app;

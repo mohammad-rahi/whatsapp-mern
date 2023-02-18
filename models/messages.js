@@ -5,16 +5,16 @@ const whatsappSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  senderUid: {
+    type: String,
+    required: true,
+  },
+  receiverUid: {
     type: String,
     required: true,
   },
   timestamp: {
     type: Date,
-    required: true,
-  },
-  received: {
-    type: String,
     required: true,
   },
 });
